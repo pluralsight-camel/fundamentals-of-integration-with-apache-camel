@@ -60,7 +60,7 @@ mvn camel:run
 
 1. I've opened the project class where I'll be adding the route. I've already defined the main method. 
 2. The first step is to initialize Camel's standalone run-time. To do this, I'll create an instance of Camel's Main class and call its run behavior. 
-```java
+```
 import org.apache.camel.main.Main;
 
 Main main = new Main();
@@ -69,31 +69,31 @@ main.run(args);
 ```
 3. Now when I run the application, the runtime will remain in a loop until I terminate it. Camel will also start up its container and initialize its context. 
 4. Next, I need to add the route.  
-```java
+```
     main.configure().addLambdaRouteBuilder(
             
     ); 
 ```
 5. Route Builder provides Camel's Fluent DSL for defining the route. This code adds the route to the camel context. Obviously, the route doesn't do much until I tell Camel what I want it to do.
 6. I'm going to start by adding in the from, process and to definitions that I explained earlier. 
-```java
+```
     rb -> rb
         .from()
         .process()
         .to()        
 ```
 7. Again, the route defines where Camel should route data from, how to process it and where it should route data to. For this route, I want to accept input from the console, change the data and then return output to the console. How can I accomplish this? I need to use Java's system input stream and system output stream. If I'm building a route like this for the first time, my first step should be search Camel's 300 plus components to see how it might support my needs. Sure enough, there is a component called Stream. This component provides me with access to system in and system out. Let me add it now. 
-```java
+```
 from("stream://in")
 
 to("stream://out")
 ```
 8. You may be wondering what the strings are that I just added. On the left side of the colon is the name of the component, in this case stream. If you were using Camel's file component, you would expect to see the word file on the left. This string is a URI. All route definitions use this same URI pattern. Note the forward slashes are optional. On the right forward slashes, I've defined a path. I've specified in for the from definition and out for the to definition. This just says route from system in and route to system out. Just having a prompt can be confusing, so how do I add text as part of the prompt? It can be done through query parameter options on the URI. 
-```java
+```
 from("stream:in?promptMessage=What should I repeat: ")
 ```
 9. Every component supports configuration through query parameters on the URI. In this case, I've added the option for the stream component to prompt a text message as part of system in. The message tells the user that whatever message that gets input will be repeated back to them. This addresses the from and to definitions, but now I want to do some processing of the data that gets input. I'm going to add code to the process definition that enhances the message typed by the user. 
-```java
+```
 (exchange) ->
     exchange.getIn().setBody("You said: " + exchange.getIn().getBody(String.class))
 ```
