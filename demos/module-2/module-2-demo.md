@@ -111,5 +111,5 @@ mvnw camel: run
 15. I'll enter some text and should see the message get repeated back to me. 
 16. Once I hit enter, the message was streamed into my route, the processor added the text you said and then the route output the full message back to system out. 
 17. As a last step, I'll hit control c and terminate the route. Here the log shows that Camel has successfully stopped the route.  
-18. I chose this type of route because I thought it was better than the traditional hello world example. If you'd like to do some additional exploration, try extending this example to behave like a CLI would. For instance, have your processor check the type of command entered and respond appropriately. 
-19. That concludes the demo. Let's wrap up with a summary of this first module. 
+18. I chose this type of route because I thought it was better than the traditional hello world example. If you'd like to do some additional exploration, try extending this example to behave like a CLI would. For instance, have your processor check the type of command entered and respond appropriately.
+19. Let's revisit some of the concepts I introduced in this route. 
