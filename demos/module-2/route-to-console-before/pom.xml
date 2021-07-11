@@ -15,7 +15,7 @@
   <groupId>com.pluralsight.michaelhoffman.camel</groupId>
   <artifactId>route-to-console-before</artifactId>
   <version>1</version>
-  <name>RouteToConsole</name>
+  <name>RouteToConsoleBefore</name>
   <description>Pluralsight course on Fundamentals of Integration with Apache Camel - Module 2 project for route to console</description>
 
     <dependencyManagement>
