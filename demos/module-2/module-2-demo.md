@@ -48,7 +48,7 @@ In the pom.xml file of each module, I've included several dependencies that are 
 I've included the Camel Maven plugin to support directly executing the application. Simply run the following command from the root of the module:
 
 ```
-mvn camel:run
+mvnw camel:run
 ```
 
 ## Project Links
