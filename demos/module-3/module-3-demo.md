@@ -395,8 +395,50 @@ MockEndpoint restEndpoint =
 AdviceWith.adviceWith(camelContext, "address-updates-to-customer-service-route",
     rb -> rb.replaceFromWith("direct:file:start"));
 
-    AdviceWith.adviceWith(camelContext, "address-updates-to-customer-service-route",
-        rb -> rb.weaveByType(ToDynamicDefinition.class).replace().toD("mock://rest:patch:customer"));
+AdviceWith.adviceWith(camelContext, "address-updates-to-customer-service-route",
+    rb -> rb.weaveByType(ToDynamicDefinition.class).replace().toD("mock://rest:patch:customer"));
 ```
 
-16. This line of code will tell Camel to replace any dynamic to definition in the route with a .
+16. This line of code will tell Camel to replace any dynamic to definition in the route with a mocked dynamic to definition. This should be all that's needed to fix the test. Let's open a terminal and try it.
+
+17. I'm going run the test case again.
+```
+mvnw test
+```
+
+18. If I scroll up in the log, I can see that advice with worked and my mock assertion succeeded.
+```
+2021-08-22 10:34:44.742  INFO   --- [           main] org.apache.camel.Tracing                 :      [address-upda] [mock://rest:patch:customer       ] Exchange[Id: 9F12406401A97D6-0000000000000001, BodyType: byte[], Body: {"id":1,"addr
+essLine1":"1060 W. Addison St.","addressLine2":"","city":"Chicago","state":"IL","postalCode":"60613"}]
+2021-08-22 10:34:44.748  INFO   --- [           main] org.apache.camel.Tracing                 : *<-- [address-upda] [from[direct://file:start]        ] Exchange[Id: 9F12406401A97D6-0000000000000000, BodyType: java.util.ArrayList, Body:
+1,1060 W. Addison St.,,Chicago,IL,60613]
+2021-08-22 10:34:44.748  INFO   --- [           main] o.a.camel.component.mock.MockEndpoint    : Asserting: mock://rest:patch:customer is satisfied
+```
+
+19. My purpose for showing you the dynamic endpoint as a separate step was to ease you in to a different way of routing to a destination. Likely you would have implemented unit tests to support the dynamic endpoint earlier as part of initial development. Its also important to note that starting with mocks hid the fact that I was missing part of the path on my REST endpoint. Mocks are great for starting development, but this reinforces the importance of actual integration testing earlier in development to catch these gaps. The last step in this demo is to try actually executing the route in full. Let's open a few terminal windows.
+
+20. In the first terminal, I'll run the project using mvnw space exec colon java.
+```
+mvnw exec:java
+```
+
+21. The log says the route is started and listening for files at the path c colon slash integration dash file slash in. You will need to make sure this path and the archive path in the properties file exist first before running the command. I'll open the second terminal window.
+
+22. In this window, I'll copy a test file from my project's resources directory using the windows command copy.
+```
+copy customer-integration\src\test\resources\data\customer-address-update-full.csv c:\integration-file\in
+```
+
+23. Now I'll go back to the camel runtime terminal.
+
+24. In the log I see all three patch requests as a result of processing the file:
+```
+2021-08-22 11:06:13.253 DEBUG 17612 --- [nio-8080-exec-1] c.p.m.c.c.i.c.c.CustomerController       : Received customer request patch: Customer{id=1, addressLine1='1060 W. Addison St.', addressLine2='', city='Chicago', state='IL', postalC
+ode='60613'}
+2021-08-22 11:06:13.288 DEBUG 17612 --- [nio-8080-exec-2] c.p.m.c.c.i.c.c.CustomerController       : Received customer request patch: Customer{id=2, addressLine1='120 E. 76th St.', addressLine2='Suite 200', city='Chicago', state='IL', po
+stalCode='60613'}
+2021-08-22 11:06:13.296 DEBUG 17612 --- [nio-8080-exec-4] c.p.m.c.c.i.c.c.CustomerController       : Received customer request patch: Customer{id=3, addressLine1='220 E. 77th St.', addressLine2='Apt 402', city='Chicago', state='IL', post
+alCode='60614'}
+```
+
+25. It looks like I have a successfully running Camel route. That completes the demonstration.
