@@ -24,38 +24,13 @@ import org.springframework.test.context.TestPropertySource;
 @ContextConfiguration(classes = IntegrationConfig.class)
 @TestPropertySource(locations = "classpath:/application-test.properties")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-@MockEndpointsAndSkip("file:.*|rest:.*")
-@UseAdviceWith
 public class AddressUpdatesToCustomerServiceRouteTest {
-
-    @Autowired
-    private ProducerTemplate producerTemplate;
-
-    @Autowired
-    private CamelContext camelContext;
 
     @Value("classpath:data/customer-address-update-valid.csv")
     private Resource customerAddressUpdateFileValidResource;
 
     @Test
     public void route_testValid() throws Exception {
-        AdviceWith.adviceWith(camelContext, "address-updates-to-customer-service-route",
-            rb -> rb.replaceFromWith("direct:file:start"));
-
-        AdviceWith.adviceWith(camelContext, "address-updates-to-customer-service-route",
-            rb -> rb.weaveByType(ToDynamicDefinition.class).replace().toD("mock://rest:patch:customer"));
-
-        camelContext.start();
-
-        GenericFile file = new GenericFile();
-        file.setFile(customerAddressUpdateFileValidResource.getFile());
-
-        MockEndpoint restEndpoint =
-            camelContext.getEndpoint("mock://rest:patch:customer", MockEndpoint.class);
-
-        restEndpoint.expectedMessageCount(1);
-        producerTemplate.sendBody("direct:file:start", file);
-        restEndpoint.assertIsSatisfied();
     }
 
 }

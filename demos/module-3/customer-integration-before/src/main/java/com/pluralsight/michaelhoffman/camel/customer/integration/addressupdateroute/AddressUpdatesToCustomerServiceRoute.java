@@ -9,26 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class AddressUpdatesToCustomerServiceRoute extends RouteBuilder {
 
-    private CsvDataFormat csvDataFormatAddressUpdate;
-
-    public AddressUpdatesToCustomerServiceRoute(
-        @Qualifier("csvDataFormatAddressUpdate") CsvDataFormat csvDataFormatAddressUpdate
-    ) {
-        this.csvDataFormatAddressUpdate = csvDataFormatAddressUpdate;
-    }
-
     @Override
     public void configure() throws Exception {
-        from("file:{{app.addressToCustomerRoute.directory}}" +
-            "?include={{app.addressToCustomerRoute.includeFile}}" +
-            "&move={{app.addressToCustomerRoute.moveDirectory}}")
-            .routeId("address-updates-to-customer-service-route")
-            .unmarshal(csvDataFormatAddressUpdate)
-            .split(body())
-            .bean(AddressUpdateLineToCustomerMapper.class, "process")
-            .setProperty("customerId", simple("${body.id}"))
-            .marshal()
-            .json()
-            .toD("rest:patch:customer/${exchangeProperty.customerId}?host={{app.customer-service.host}}");
     }
 }
