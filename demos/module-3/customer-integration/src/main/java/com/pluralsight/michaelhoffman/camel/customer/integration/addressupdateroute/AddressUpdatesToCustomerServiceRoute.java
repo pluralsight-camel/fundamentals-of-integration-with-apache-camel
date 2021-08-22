@@ -6,6 +6,12 @@ import org.apache.camel.model.dataformat.CsvDataFormat;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+/**
+ * Main route for the demonstration. Accepts a file from the configured directory
+ * matching the name pattern in the include. After processing the file, it is archived
+ * to the configured folder in the move parameter. The route than processes each line of data
+ * using a splitter and calling a rest endpoint for each line.
+ */
 @Component
 public class AddressUpdatesToCustomerServiceRoute extends RouteBuilder {
 

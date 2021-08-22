@@ -19,6 +19,11 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
+/**
+ * Unit test for the demonstration route. This is currently just a simple
+ * test to verify processing but could be expanded upon for checking message
+ * content and exception cases.
+ */
 @CamelSpringBootTest
 @SpringBootApplication
 @ContextConfiguration(classes = IntegrationConfig.class)

@@ -1,13 +1,16 @@
 package com.pluralsight.michaelhoffman.camel.customer.integration.addressupdateroute.processor;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import com.pluralsight.michaelhoffman.camel.customer.integration.common.dto.Customer;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+/**
+ * Tests the mapper class.
+ */
 public class AddressUpdateLineToCustomerMapperTest {
 
     private static final List<String> fixtureAddressRow =
