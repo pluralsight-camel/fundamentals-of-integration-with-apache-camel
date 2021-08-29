@@ -121,13 +121,13 @@ mvnw exec:java
 
 ## Demo 1 Script - Route and Unit Test Creation
 
-1. I've opened my development environment along with two application classes. The first class is named Address Updates to Customer Service Route. It's where I plan to define the route for updating customer addresses from a file to a REST endpoint. Since I'm using Spring for this demonstration, one of it's benefits is that I can annotate a Route Builder class as a Spring component. Camel will then automatically take care of loading it and executing it in the Camel context. Just as in the previous route demonstration, I'll start by defining the from and to definition in the configure method.
+1. I've opened my development environment along with two application classes. The first class is named Address Updates to Customer Service Route. This is where I will add the route logic. Since I'm using Spring for this demonstration, one of it's benefits is that I can annotate a Route Builder class as a Spring component. Camel will then automatically take care of loading it and executing it in the Camel context. Just as in the previous route demonstration, I'll start by defining the from and to definition in the configure method.
 ```
 from("")
   .to("");
 ```
 
-2. If you remember in the last demonstration, Camel provided a default name for my route when it was initialized. It's better to define the name of your routes. As you'll see shortly, the name can then be used for identification in testing or for other purposes such as logging and notifications.
+2. If you remember in the last demonstration, Camel provided a default name for my route when it was initialized. It's always a good idea to define a specific name for your routes. As you'll see shortly, the name can then be used for identification in testing or for other purposes such as logging and notifications.
 ```
 from("")
   .routeId("address-updates-to-customer-service-route")
@@ -176,7 +176,7 @@ private ProducerTemplate producerTemplate;
 private MockEndpoint restEndpoint;
 ```
 
-10. Camel has a mock component that defines the endpoint URI I want to replace. I can then use this rest endpoint test member to make assertions on data it gets passed. Now I need to complete my test case. I want to define how the file gets produced to the route and then I want to define the expectations for the mock that consumes it. Similar to the mock, I'm going to use Camel's "advice with" to replace the "from" definition. Make sure to add it before the line to start the camel context.
+10. Camel has a mock component that defines the endpoint URI I want to replace. I can then use this rest endpoint test member to make assertions on data it gets passed. Now I need to complete my test case. I want to define how the file gets produced to the route and then I want to define the expectations for the mock that consumes it. Similar to the mock, I'm going to use Camel's "advice with" to replace the "from" definition.
 ```
 AdviceWith.adviceWith(camelContext, "address-updates-to-customer-service-route",
     rb -> rb.replaceFromWith("direct:file:start"));
@@ -193,7 +193,7 @@ file.setFile(customerAddressUpdateFileValidResource.getFile());
 producerTemplate.sendBody("direct:file:start", file);
 ```
 
-13. The send body method will send the file to the route via the direct component I defined in advice with. This is a basic pattern you can follow for most production of content to a route. The last step of the test is to tell Camel what the mock rest endpoint expects. I'll add the expectation and assertion calls now.
+13. The send body method will send the file to the route via the direct component I defined. This is a basic pattern you can follow for most production of content to a route. The last step of the test is to tell Camel what the mock rest endpoint expects. I'll add the expectation and assertion calls now.
 ```
 restEndpoint.expectedMessageCount(1);
 
