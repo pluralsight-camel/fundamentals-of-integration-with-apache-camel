@@ -1,6 +1,6 @@
-# Fundamentals of Integration with Apache Camel - Module 3 Demonstration
+# Fundamentals of Integration with Apache Camel - Module 4 Demonstration
 
-This is the demonstration for module 3 of the Fundamentals of Integration with Apache Camel Pluralsight course. In this module, I demonstrate an ETL route that consumes a file of shipping address updates and routes the data to a REST endpoint for a PATCH of the address information.
+This is the demonstration for module 4 of the Fundamentals of Integration with Apache Camel Pluralsight course. In this module, I demonstrate an ETL route that consumes a file of shipping address updates and routes the data to a REST endpoint for a PATCH of the address information.
 
 ## Project Setup
 

@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project
-    xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>com.pluralsight.michaelhoffman.camel</groupId>
-        <artifactId>module-3</artifactId>
+        <artifactId>module-4</artifactId>
         <version>1</version>
     </parent>
 
-    <artifactId>customer-integration-before</artifactId>
+    <artifactId>customer-integration</artifactId>
     <version>1</version>
     <packaging>jar</packaging>
-    <name>CustomerIntegrationBefore</name>
-    <description>Pluralsight course on Fundamentals of Integration with Apache Camel - Module 3 project for customer integration</description>
+    <name>CustomerIntegration</name>
+    <description>Pluralsight course on Fundamentals of Integration with Apache Camel - Module 4 project for customer integration</description>
 
     <dependencyManagement>
         <dependencies>

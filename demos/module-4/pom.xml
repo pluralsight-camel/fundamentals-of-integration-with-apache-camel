@@ -12,7 +12,7 @@
 		<version>1</version>
 	</parent>
 
-    <artifactId>module-3</artifactId>
+    <artifactId>module-4</artifactId>
     <version>1</version>
     <packaging>pom</packaging>
 
