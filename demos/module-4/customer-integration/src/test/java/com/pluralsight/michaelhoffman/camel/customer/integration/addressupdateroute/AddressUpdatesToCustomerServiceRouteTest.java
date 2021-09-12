@@ -2,6 +2,7 @@ package com.pluralsight.michaelhoffman.camel.customer.integration.addressupdater
 
 import com.pluralsight.michaelhoffman.camel.customer.integration.config.IntegrationConfig;
 import org.apache.camel.CamelContext;
+import org.apache.camel.EndpointInject;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.AdviceWith;
 import org.apache.camel.component.file.GenericFile;
@@ -19,11 +20,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
-/**
- * Unit test for the demonstration route. This is currently just a simple
- * test to verify processing but could be expanded upon for checking message
- * content and exception cases.
- */
 @CamelSpringBootTest
 @SpringBootApplication
 @ContextConfiguration(classes = IntegrationConfig.class)
@@ -32,35 +28,18 @@ import org.springframework.test.context.TestPropertySource;
 @MockEndpointsAndSkip("file:.*|rest:.*")
 @UseAdviceWith
 public class AddressUpdatesToCustomerServiceRouteTest {
+    @Autowired
+    private CamelContext camelContext;
 
     @Autowired
     private ProducerTemplate producerTemplate;
 
-    @Autowired
-    private CamelContext camelContext;
-
-    @Value("classpath:data/customer-address-update-valid.csv")
-    private Resource customerAddressUpdateFileValidResource;
+    @EndpointInject("mock://rest:patch:customer")
+    private MockEndpoint restEndpoint;
 
     @Test
     public void route_testValid() throws Exception {
-        AdviceWith.adviceWith(camelContext, "address-updates-to-customer-service-route",
-            rb -> rb.replaceFromWith("direct:file:start"));
-
-        AdviceWith.adviceWith(camelContext, "address-updates-to-customer-service-route",
-            rb -> rb.weaveByType(ToDynamicDefinition.class).replace().toD("mock://rest:patch:customer"));
-
         camelContext.start();
-
-        GenericFile file = new GenericFile();
-        file.setFile(customerAddressUpdateFileValidResource.getFile());
-
-        MockEndpoint restEndpoint =
-            camelContext.getEndpoint("mock://rest:patch:customer", MockEndpoint.class);
-
-        restEndpoint.expectedMessageCount(1);
-        producerTemplate.sendBody("direct:file:start", file);
-        restEndpoint.assertIsSatisfied();
     }
 
 }

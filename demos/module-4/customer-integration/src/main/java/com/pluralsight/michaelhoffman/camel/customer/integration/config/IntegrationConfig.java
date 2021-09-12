@@ -4,10 +4,6 @@ import org.apache.camel.model.dataformat.CsvDataFormat;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * Integration config for supporting CSV data formatting coming
- * from file processing in the route.
- */
 @Configuration
 public class IntegrationConfig {
 

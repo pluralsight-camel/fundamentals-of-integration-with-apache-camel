@@ -5,10 +5,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-/**
- * Spring Bean used for mapping from the row of a processed CSV
- * file to a Customer DTO for sending as a REST request.
- */
 @Component
 public class AddressUpdateLineToCustomerMapper {
 
