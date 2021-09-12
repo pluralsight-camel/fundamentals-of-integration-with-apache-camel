@@ -26,9 +26,6 @@ import org.springframework.test.context.TestPropertySource;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class AddressUpdatesToCustomerServiceRouteTest {
 
-    @Value("classpath:data/customer-address-update-valid.csv")
-    private Resource customerAddressUpdateFileValidResource;
-
     @Test
     public void route_testValid() throws Exception {
     }
