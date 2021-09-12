@@ -184,6 +184,9 @@ AdviceWith.adviceWith(camelContext, "address-updates-to-customer-service-route",
 
 11. The static method I've used intercepts the start of my route. It updates the route by replacing the from definition with a direct component. I've also included an arbitrary name for the URI of file colon start. Now I can use the producer template I defined to send a file into the route, but first I need an instance of a file. Let me add that now.
 ```
+@Value("classpath:data/customer-address-update-valid.csv")
+private Resource customerAddressUpdateFileValidResource;
+
 GenericFile file = new GenericFile();
 file.setFile(customerAddressUpdateFileValidResource.getFile());
 ```

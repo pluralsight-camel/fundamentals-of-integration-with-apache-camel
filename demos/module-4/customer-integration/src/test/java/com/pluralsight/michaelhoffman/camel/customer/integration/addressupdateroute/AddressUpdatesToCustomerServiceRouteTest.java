@@ -37,9 +37,21 @@ public class AddressUpdatesToCustomerServiceRouteTest {
     @EndpointInject("mock://rest:patch:customer")
     private MockEndpoint restEndpoint;
 
+    @Value("classpath:data/customer-address-update-valid.csv")
+    private Resource customerAddressUpdateFileValidResource;
+
     @Test
     public void route_testValid() throws Exception {
+        GenericFile file = new GenericFile();
+        file.setFile(customerAddressUpdateFileValidResource.getFile());
+
+        AdviceWith.adviceWith(camelContext,
+            "address-updates-to-customer-service-route",
+            rb -> rb.replaceFromWith("direct:file:start"));
         camelContext.start();
+        restEndpoint.expectedMessageCount(1);
+        producerTemplate.sendBody("direct:file:start", file);
+        restEndpoint.assertIsSatisfied();
     }
 
 }
