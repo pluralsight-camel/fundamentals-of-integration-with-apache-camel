@@ -34,9 +34,6 @@ public class AddressUpdatesToCustomerServiceRouteTest {
     @Autowired
     private ProducerTemplate producerTemplate;
 
-    @EndpointInject("mock://rest:patch:customer")
-    private MockEndpoint restEndpoint;
-
     @Value("classpath:data/customer-address-update-valid.csv")
     private Resource customerAddressUpdateFileValidResource;
 
@@ -45,9 +42,20 @@ public class AddressUpdatesToCustomerServiceRouteTest {
         GenericFile file = new GenericFile();
         file.setFile(customerAddressUpdateFileValidResource.getFile());
 
+        MockEndpoint restEndpoint =
+            camelContext.getEndpoint(
+                "mock://rest:patch:customer", MockEndpoint.class);
+        // Replaces ALL dynamic to definitions
+        AdviceWith.adviceWith(camelContext,
+            "address-updates-to-customer-service-route",
+            rb -> rb.weaveByType(ToDynamicDefinition.class)
+                .replace()
+                .toD("mock://rest:patch:customer"));
+        // Replaces the from definition
         AdviceWith.adviceWith(camelContext,
             "address-updates-to-customer-service-route",
             rb -> rb.replaceFromWith("direct:file:start"));
+        // Once advice with is used, the camel context has to be started manually
         camelContext.start();
         restEndpoint.expectedMessageCount(1);
         producerTemplate.sendBody("direct:file:start", file);

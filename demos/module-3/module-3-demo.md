@@ -253,9 +253,10 @@ camel.springboot.tracing=true
 private CsvDataFormat csvDataFormatAddressUpdate;
 
 public AddressUpdatesToCustomerServiceRoute(
-    @Qualifier("csvDataFormatAddressUpdate") CsvDataFormat csvDataFormatAddressUpdate
-) {
-    this.csvDataFormatAddressUpdate = csvDataFormatAddressUpdate;
+    @Qualifier("csvDataFormatAddressUpdate")
+      CsvDataFormat csvDataFormatAddressUpdate) {
+    this.csvDataFormatAddressUpdate =
+      csvDataFormatAddressUpdate;
 }
 ```
 
@@ -328,7 +329,7 @@ from("file:{{app.addressToCustomerRoute.directory}}" +
         "&move={{app.addressToCustomerRoute.moveDirectory}}")
 ```
 
-2. The bind variables all point to properties found in the application properties file under the project resources folder. Again, the benefit of externalizing these values is that I can change them in each environment I deploy to. Another benefit is that your automated integration tests can be configured to use a different directory path and file name than your normal runtime. At this point, its a good idea to revisit the unit test and make sure it still runs successfully. I'll open a terminal window now.
+2. The bind variables point to values found in the application properties file under the project resources folder. Again, the benefit of externalizing these values is that I can change them in each environment I deploy to. Another benefit is that your automated integration tests can be configured to use a different directory path and file name than your normal runtime. At this point, its a good idea to revisit the unit test and make sure it still runs successfully. I'll open a terminal window now.
 
 3. Let's run the test case.
 ```
@@ -394,7 +395,7 @@ MockEndpoint restEndpoint =
     camelContext.getEndpoint("mock://rest:patch:customer", MockEndpoint.class);
 ```
 
-15. This allows me to retrieve the mock, but how do I tell Camel to match the dynamic endpoint? To do this, I'll use advice with, similar to how I replaced the from defintion.
+15. This allows me to retrieve the mock, but how do I tell Camel to match the dynamic endpoint? To do this, I'll use advice with, similar to how I replaced the from definition.
 ```
 AdviceWith.adviceWith(camelContext, "address-updates-to-customer-service-route",
     rb -> rb.replaceFromWith("direct:file:start"));
