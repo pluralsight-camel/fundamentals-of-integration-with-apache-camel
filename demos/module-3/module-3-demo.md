@@ -346,7 +346,9 @@ ctory}}] --> [direct:file:start]
 
 6. Now I have address the "to" definition of the route. The route destination is a REST controller that I've included in the project. Let me replace the "to" definition.
 ```
-.toD("rest:patch:customer/${exchangeProperty.customerId}?host={{app.customer-service.host}}");
+.toD(
+  "rest:patch:customer/${exchangeProperty.customerId}" +
+  "?host={{app.customer-service.host}}");
 ```
 
 7. To re-iterate, I need to dynamically change the endpoint at run-time, which isn't supported with the common to definition. I'm going to use "to d" in order to support this. I've included a bind variable for the host parameter. The endpoint path is customer, slash, customer ID. You may be asking, how does this customer ID get set? What is an exchange property? As I've described earlier, the input to each step of the route is mapped to the output from the previous step. Given this, I need a way to store data that is available across multiple steps of the route. An exchange property is meta-data that is available across route processing. Let me add the setting of this property now.
@@ -392,7 +394,8 @@ GenericFile file = new GenericFile();
 file.setFile(customerAddressUpdateFileValidResource.getFile());
 
 MockEndpoint restEndpoint =
-    camelContext.getEndpoint("mock://rest:patch:customer", MockEndpoint.class);
+    camelContext.getEndpoint(
+      "mock://rest:patch:customer", MockEndpoint.class);
 ```
 
 15. This allows me to retrieve the mock, but how do I tell Camel to match the dynamic endpoint? To do this, I'll use advice with, similar to how I replaced the from definition.
@@ -400,8 +403,11 @@ MockEndpoint restEndpoint =
 AdviceWith.adviceWith(camelContext, "address-updates-to-customer-service-route",
     rb -> rb.replaceFromWith("direct:file:start"));
 
-AdviceWith.adviceWith(camelContext, "address-updates-to-customer-service-route",
-    rb -> rb.weaveByType(ToDynamicDefinition.class).replace().toD("mock://rest:patch:customer"));
+AdviceWith.adviceWith(camelContext,
+  "address-updates-to-customer-service-route",
+    rb -> rb.weaveByType(ToDynamicDefinition.class)
+      .replace()
+        .toD("mock://rest:patch:customer"));
 ```
 
 16. This line of code will tell Camel to replace any dynamic to definition in the route with a mocked dynamic to definition. This should be all that's needed to fix the test. Let's open a terminal and try it.
@@ -431,7 +437,7 @@ mvnw exec:java
 
 22. In this window, I'll copy a test file from my project's resources directory using the windows command copy.
 ```
-copy customer-integration\src\test\resources\data\customer-address-update-full.csv c:\integration-file\in
+copy src\test\resources\data\customer-address-update-full.csv c:\integration-file\in
 ```
 
 23. Now I'll go back to the camel runtime terminal.

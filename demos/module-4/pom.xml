@@ -8,17 +8,15 @@
 
 	<parent>
 		<groupId>com.pluralsight.michaelhoffman.camel</groupId>
-		<artifactId>fundamentals-of-integration-with-apache-camel</artifactId>
+		<artifactId>demos</artifactId>
 		<version>1</version>
 	</parent>
 
-    <artifactId>demos</artifactId>
+    <artifactId>module-4</artifactId>
     <version>1</version>
     <packaging>pom</packaging>
 
     <modules>
-        <module>module-2</module>
-        <module>module-3</module>
-        <module>module-4</module>
+        <module>apache-camel-foundations</module>
     </modules>
 </project>
