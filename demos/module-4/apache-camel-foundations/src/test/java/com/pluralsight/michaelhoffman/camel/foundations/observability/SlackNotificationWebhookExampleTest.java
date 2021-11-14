@@ -1,5 +1,7 @@
-package com.pluralsight.michaelhoffman.camel.foundations.errors;
+package com.pluralsight.michaelhoffman.camel.foundations.observability;
 
+import com.pluralsight.michaelhoffman.camel.foundations.errors.AException;
+import com.pluralsight.michaelhoffman.camel.foundations.errors.BException;
 import org.apache.camel.CamelExecutionException;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.LoggingLevel;
@@ -10,9 +12,10 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class OnExceptionExampleTest extends CamelTestSupport {
+public class SlackNotificationWebhookExampleTest extends CamelTestSupport {
 
-    private static final Logger log = LoggerFactory.getLogger(OnExceptionExampleTest.class);
+    private static final Logger log =
+        LoggerFactory.getLogger(SlackNotificationWebhookExampleTest.class);
 
     @EndpointInject("mock:test")
     private MockEndpoint mockEndpoint;
@@ -22,8 +25,16 @@ public class OnExceptionExampleTest extends CamelTestSupport {
         return new RouteBuilder() {
             @Override
             public void configure() throws Exception {
-            onException(AException.class).log(LoggingLevel.ERROR, "A exception").handled(true);
-            onException(BException.class).log(LoggingLevel.ERROR, "B exception").handled(true);
+            onException(AException.class)
+                .log(LoggingLevel.ERROR, "A exception")
+                .handled(true)
+                .to("slack:?webhookUrl=" +
+                    "https://hooks.slack.com/services/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");
+            onException(BException.class)
+                .log(LoggingLevel.ERROR, "B exception")
+                .handled(true)
+                .to("slack:?webhookUrl=" +
+                    "https://hooks.slack.com/services/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");
 
             from("direct:start")
                 .process(exchange -> {
@@ -55,4 +66,6 @@ public class OnExceptionExampleTest extends CamelTestSupport {
         }
         mockEndpoint.assertIsSatisfied();
     }
+
+
 }

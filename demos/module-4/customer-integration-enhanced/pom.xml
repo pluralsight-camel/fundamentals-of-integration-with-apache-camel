@@ -12,11 +12,11 @@
         <version>1</version>
     </parent>
 
-    <artifactId>apache-camel-foundations</artifactId>
+    <artifactId>customer-integration-enhanced</artifactId>
     <version>1</version>
     <packaging>jar</packaging>
-    <name>ApacheCamelFoundations</name>
-    <description>Pluralsight course on Fundamentals of Integration with Apache Camel - Module 4 projects for foundations</description>
+    <name>CustomerIntegration</name>
+    <description>Pluralsight course on Fundamentals of Integration with Apache Camel - Module 4 project for customer integration</description>
 
     <dependencyManagement>
         <dependencies>
@@ -71,6 +71,11 @@
 
         <dependency>
             <groupId>org.apache.camel.springboot</groupId>
+            <artifactId>camel-csv-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.camel.springboot</groupId>
             <artifactId>camel-http-starter</artifactId>
         </dependency>
 
@@ -81,13 +86,18 @@
 
         <dependency>
             <groupId>org.apache.camel</groupId>
-            <artifactId>camel-slack</artifactId>
-            <version>${camel.version}</version>
+            <artifactId>camel-management</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
+            <groupId>org.jolokia</groupId>
+            <artifactId>jolokia-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-slack</artifactId>
+            <version>${camel.version}</version>
         </dependency>
 
         <dependency>
@@ -109,7 +119,7 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.pluralsight.michaelhoffman.camel.foundations.FoundationsApplication</mainClass>
+                    <mainClass>com.pluralsight.michaelhoffman.camel.customer.integration.CustomerIntegrationApplication</mainClass>
                 </configuration>
             </plugin>
         </plugins>

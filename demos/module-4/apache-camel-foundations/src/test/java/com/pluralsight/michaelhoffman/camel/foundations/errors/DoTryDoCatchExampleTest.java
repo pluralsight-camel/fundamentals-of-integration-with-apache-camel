@@ -25,16 +25,17 @@ public class DoTryDoCatchExampleTest extends CamelTestSupport {
             from("direct:start")
                 .doTry()
                     .process(exchange -> {throw new AException("A");})
+                    .to("mock:test")
                 .doCatch(AException.class)
                     .process(exchange -> {log.error("A was thrown");})
-                .to("mock:test");
+                .endDoTry();
             }
         };
     }
 
     @Test
     public void test_defaultErrorHandlerExample() throws Exception {
-        mockEndpoint.expectedMessageCount(1);
+        mockEndpoint.expectedMessageCount(0);
         template.sendBody("direct:start", "A");
         mockEndpoint.assertIsSatisfied();
     }

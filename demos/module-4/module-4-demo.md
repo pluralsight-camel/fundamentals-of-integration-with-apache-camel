@@ -91,6 +91,16 @@ In the pom.xml file of the module, I've included several dependencies that are r
 
         <dependency>
             <groupId>org.apache.camel</groupId>
+            <artifactId>camel-management</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jolokia</groupId>
+            <artifactId>jolokia-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.camel</groupId>
             <artifactId>camel-test-spring-junit5</artifactId>
             <scope>test</scope>
         </dependency>
@@ -202,7 +212,7 @@ In fact, you can override the default error handler if you wanted. By also defin
 
 ## Example 5 - Do Try, Do Catch and Do Finally Definition Example
 
-The example com.pluralsight.michaelhoffman.camel.foundations.errors.DoTryDoCatchExampleTest is an example of an approach that I covered in the notifications section of the course, but is also relevant to the error handling section. In this example, I'm simply wrapping the .process definition with a doTry and doCatch definition. This simulates Java's try-catch-finally blocks:
+The example com.pluralsight.michaelhoffman.camel.foundations.errors.DoTryDoCatchExampleTest is an example of an approach that I covered in the error handling section. In this example, I'm simply wrapping the .process definition with a doTry and doCatch definition. This simulates Java's try-catch-finally blocks:
 
 ```java
 @Override
@@ -210,15 +220,320 @@ protected RouteBuilder createRouteBuilder() throws Exception {
     return new RouteBuilder() {
         @Override
         public void configure() throws Exception {
-        from("direct:start")
-            .doTry()
-                .process(exchange -> {throw new AException("A");})
-            .doCatch(AException.class)
-                .process(exchange -> {log.error("A was thrown");})
-            .to("mock:test");
+            from("direct:start")
+               .doTry()
+                    .process(exchange -> {throw new AException("A");})
+                    .to("mock:test")
+                .doCatch(AException.class)
+                    .process(exchange -> {log.error("A was thrown");})
+                .endDoTry();
         }
     };
 }
 ```
 
 This gives you the opportunity to directly handle a variety of exceptions at any point in the route processing. It also means you are now responsible for handling what should happen to the error. Should the message continue to process? Should the message be logged? Should a notification be sent? Should there ba a retry? 
+
+## Example 6 - Customer Integration Redelivery Policy
+
+The enhanced customer integration route was updated to include a redelivery policy. The route is found here:com.pluralsight.michaelhoffman.camel.customer.integration.addressupdateroute.AddressUpdatesToCustomerServiceRoute.configure. The policy says that for the two defined exceptions, there will be two retries with a delay of 5s between each retry. In addition, logging was configured when the retry has been exhausted. 
+
+```
+onException(HttpOperationFailedException.class, SocketTimeoutException.class)
+    .handled(true)
+    .log(LoggingLevel.ERROR,
+        "Failed to patch: ${exception.message}")
+    .maximumRedeliveries(2)
+    .redeliveryDelay(5000)
+    .logExhausted(true)
+    .logExhaustedMessageHistory(true)
+    .logRetryAttempted(true)
+    .end();
+```
+
+## Example 7 - Throttle Pattern
+
+The test com.pluralsight.michaelhoffman.camel.foundations.throttle.ThrottleExampleTest gives you an example of throttling the number of messages in a route. The number of messages will be limited to 25 in a 5s time period. 
+
+```
+    from("direct:start")
+        // Maximum request count
+        .throttle(25)
+            // Length of time maximum is valid
+            .timePeriodMillis(5000)
+        .to("log:?level=ERROR&showBody=true", "mock:test");
+```
+
+## Example 8 - Slack Notifications
+
+Here is an example of using the Slack component for sending notifications on exception:com.pluralsight.michaelhoffman.camel.foundations.observability.SlackNotificationWebhookExampleTest. Note that you would need to configure your own webhook.
+
+```
+onException(AException.class)
+    .log(LoggingLevel.ERROR, "A exception")
+    .handled(true)
+    .to("slack:?webhookUrl=" +
+        "https://hooks.slack.com/services/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");
+```
+
+## Example 9 - Wire Tap
+
+The following test shows an example of using the Wire Tap enterprise integration pattern to fork a message into a new route:com.pluralsight.michaelhoffman.camel.foundations.observability.WiretapExampleTest. This creates a shallow copy of the exchange. 
+
+```
+from("direct:start")
+    .wireTap("direct:trace")
+    .process(exchange -> {
+        log.debug("Processing: " + exchange.getIn().getBody());
+    })
+    .to("mock:test");
+
+from("direct:trace")
+    .process(exchange -> {
+        log.debug("Wire tap: " + exchange.getIn().getBody());
+    })
+    .to("mock:trace");
+```
+
+## Example 10 - Jolokia
+
+I've added Jolokia as a dependency on the enhanced customer integration project. Jolokia exposes Camel's management extension beans over HTTP. When you run the container, you should be able to make HTTP calls to surface various data points. For example, the following URL will produce the response below:
+
+http://localhost:8080/actuator/jolokia/read/org.apache.camel:context=*,type=routes,name=*
+
+```
+{
+  "request": {
+    "mbean": "org.apache.camel:context=*,name=*,type=routes",
+    "type": "read"
+  },
+  "value": {
+    "org.apache.camel:context=camel-1,name=\"address-updates-to-customer-service-route\",type=routes": {
+      "StatisticsEnabled": true,
+      "CamelManagementName": "camel-1",
+      "EndpointUri": "file://c:/integration-file/in?autoCreate=false&bridgeErrorHandler=true&directoryMustExist=true&include=customer-address-update-.*.csv&move=c%3A%2Fintegration-file%2Farchive",
+      "LastProcessingTime": 10595,
+      "ExchangesCompleted": 1,
+      "ExchangesFailed": 0,
+      "Description": null,
+      "FirstExchangeCompletedExchangeId": "755A9EBD8BCAF63-0000000000000000",
+      "StartTimestamp": "2021-11-13T12:01:05-06:00",
+      "FirstExchangeCompletedTimestamp": "2021-11-13T12:16:12-06:00",
+      "LastExchangeFailureTimestamp": null,
+      "MaxProcessingTime": 10595,
+      "LastExchangeCompletedTimestamp": "2021-11-13T12:16:12-06:00",
+      "Load15": "",
+      "RouteProperties": {
+        "template": "false",
+        "parent": "3befd03a",
+        "rest": "false",
+        "description": null,
+        "id": "address-updates-to-customer-service-route",
+        "customId": "true"
+      },
+      "DeltaProcessingTime": 10595,
+      "OldestInflightDuration": null,
+      "ExternalRedeliveries": 0,
+      "UptimeMillis": 921946,
+      "ExchangesTotal": 1,
+      "ResetTimestamp": "2021-11-13T12:01:05-06:00",
+      "MeanProcessingTime": 10595,
+      "ExchangesInflight": 1,
+      "HasRouteController": false,
+      "LastExchangeFailureExchangeId": null,
+      "LogMask": false,
+      "FirstExchangeFailureExchangeId": null,
+      "Uptime": "15m21s",
+      "CamelId": "camel-1",
+      "TotalProcessingTime": 10595,
+      "FirstExchangeFailureTimestamp": null,
+      "RouteId": "address-updates-to-customer-service-route",
+      "RoutePolicyList": "",
+      "FailuresHandled": 0,
+      "RouteGroup": null,
+      "Load05": "",
+      "LastError": null,
+      "MessageHistory": false,
+      "OldestInflightExchangeId": null,
+      "State": "Started",
+      "MinProcessingTime": 10595,
+      "Redeliveries": 0,
+      "LastExchangeCompletedExchangeId": "755A9EBD8BCAF63-0000000000000000",
+      "Tracing": true,
+      "Load01": ""
+    }
+  },
+  "timestamp": 1636827387,
+  "status": 200
+}
+```
+## Example 11 - Using the Publish Event Notifier
+
+I've added an example of using the PublishEventNotifier as part of the route:com.pluralsight.michaelhoffman.camel.customer.integration.addressupdateroute.AddressUpdatesToCustomerServiceRoute. This notifier will publish almost all events to an endpoint that I've created. 
+
+```
+PublishEventNotifier notifier = new PublishEventNotifier();
+notifier.setCamelContext(getContext());
+notifier.setEndpointUri("direct:event");
+notifier.setIgnoreCamelContextEvents(true);
+getContext().getManagementStrategy().addEventNotifier(notifier);
+
+from("direct:event")
+    .log(LoggingLevel.ERROR, "EVENT: ${body}");
+
+```
+
+It's important to filter out events that you don't need; otherwise, you'll overload the destination of your events due to the volume. 
+
+## Example 12 - Splitter with Async
+
+I've updated the route here to include parallel processing in the splitter defintion: com.pluralsight.michaelhoffman.camel.customer.integration.addressupdateroute.AddressUpdatesToCustomerServiceRoute
+
+This will result in Camel using a default thread pool executor to process the split elements asynchronously. 
+
+```
+.split(body())
+  .parallelProcessing()
+```
+
+## Example 12 - Using the Aggregator Pattern
+
+This is an example route for the Aggregator pattern:com.pluralsight.michaelhoffman.camel.foundations.routing.AggregationMessageRoutingExampleTest. This pattern defines three main concepts:
+
+1. What rule(s) should be used to identify the messages to aggregate together
+2. What strategy should be used to aggregate the messages
+3. When should aggregation be considered complete
+
+For the example, I'm aggregating messages based on the event type in the header. If I had different change event types, like create/update/delete, they can be aggregated separately. I aggregate by collecting the messages into a list. Then every time the aggregation hits a size of 4, the collection is complete and continues through the route as a single exchange. 
+
+```
+            from("direct:start")
+                .aggregate(header("eventType"), (oldEx, newEx) -> {
+                        if (oldEx == null) {
+                            List<Integer> elements =
+                                new ArrayList<>(newEx.getIn().getBody(Integer.class));
+                            newEx.getIn().setBody(elements);
+                            return newEx;
+                        }
+                        List<Integer> elements = oldEx.getIn().getBody(List.class);
+                        elements.add(newEx.getIn().getBody(Integer.class));
+                        oldEx.getIn().setBody(elements);
+                        return oldEx;
+                })
+                .completionSize(4)
+                .log(LoggingLevel.ERROR, "Aggregated body: ${body}")
+                .to("mock:test");
+```
+
+## Example 13 - Content Based Routing
+
+In the example: com.pluralsight.michaelhoffman.camel.foundations.routing.ContentBasedRouterExampleTest, I'm showing the usage of content-based routing using Camel's choice/when/otherwise defintion. This is similar to Java's if/else if/else construct. This allows for an expression to be evaluated in order to determine where the message gets routed. 
+
+```
+from("direct:start")
+    .choice()
+        .when(simple("${header.eventType} == 'createCustomer'"))
+            .to("direct:create")
+        .when(simple("${header.eventType} == 'updateCustomer'"))
+            .to("direct:update")
+        .when(simple("${header.eventType} == 'deleteCustomer'"))
+            .to("direct:delete")
+        .otherwise()
+            .to("mock:test");
+
+from("direct:create")
+    .log(LoggingLevel.ERROR, "Create: ${body}")
+    .to("mock:testCreate");
+
+from("direct:update")
+    .log(LoggingLevel.ERROR, "Update: ${body}")
+    .to("mock:testUpdate");
+
+from("direct:delete")
+    .log(LoggingLevel.ERROR, "Delete: ${body}")
+    .to("mock:testDelete");
+
+```
+
+## Example 14 - Routing Slip
+
+The following test case shows an example of a routing slip:com.pluralsight.michaelhoffman.camel.foundations.routing.RoutingSlipExampleTest. This pattern is useful when message routing rules cannot be statically defined. In the example, a customer object might be a partial or full object. If any part is partially defined, I can have the slip include an endpoint to enrich that portion of the customer. If no enrichment is required, then no additional routing would occur. 
+
+```
+from("direct:start")
+    .process(exchange -> {
+        Customer customer = exchange.getIn().getBody(Customer.class);
+        List<String> enrichmentSlips = new ArrayList<>();
+        if (customer.getBillingAddress().getAddressLine1() == null) {
+            enrichmentSlips.add("direct://enrichBillingAddress");
+        }
+        if (customer.getShippingAddress().getAddressLine1() == null) {
+            enrichmentSlips.add("direct://enrichShippingAddress");
+        }
+        if (customer.getPrimaryContact().getName() == null) {
+            enrichmentSlips.add("direct://enrichPrimaryContact");
+        }
+        exchange.getIn().setHeader("enrichmentRoutingSlip",
+            enrichmentSlips.stream().collect(Collectors.joining(",")));
+    })
+    .routingSlip(header("enrichmentRoutingSlip"))
+    .to("mock:test");
+
+from("direct://enrichBillingAddress")
+    .process(exchange -> {
+        Customer customer = exchange.getIn().getBody(Customer.class);
+        customer.setBillingAddress(new Address(1, "billing address line",
+            "billing city", "billing state", "billing postal"));
+        exchange.getIn().setBody(customer);
+    })
+    .log(LoggingLevel.ERROR, "Added billing address: ${body}");
+
+from("direct://enrichShippingAddress")
+    .process(exchange -> {
+        Customer customer = exchange.getIn().getBody(Customer.class);
+        customer.setShippingAddress(new Address(1, "shipping address line",
+            "shipping city", "shipping state", "shipping postal"));
+        exchange.getIn().setBody(customer);
+    })
+    .log(LoggingLevel.ERROR, "Added shipping address: ${body}");
+
+from("direct://enrichPrimaryContact")
+    .process(exchange -> {
+        Customer customer = exchange.getIn().getBody(Customer.class);
+        customer.setPrimaryContact(new Contact(1, "contact"));
+        exchange.getIn().setBody(customer);
+    })
+    .log(LoggingLevel.ERROR, "Added contact: ${body}");
+
+```
+
+## Example 15 - Staged Event Driven Architecture (SEDA)
+
+This example shows how SEDA can be used to introduce parallel processing in a route:com.pluralsight.michaelhoffman.camel.foundations.routing.SEDARoutingExampleTest. SEDA acts as an in memory queue and can be configured to support more than one concurrent consumers. 
+
+```
+from("direct:start")
+    .to("seda:logMessage");
+
+from("seda:logMessage?concurrentConsumers=20")
+    .log(LoggingLevel.ERROR, "Message: ${body}")
+    // Artificial delay so that you can see the messages
+    // asynchronously processed in the log
+    .delay(5000)
+    .to("mock:test");
+```
+
+## Example 16 - Threads
+
+This example shows how a thread pool can be configured for SEDA:com.pluralsight.michaelhoffman.camel.foundations.routing.ThreadsRoutingExampleTest. Configurations include the initial pool size, max pool size and thread name.
+
+```
+from("direct:start")
+    .to("seda:logMessage");
+
+from("seda:logMessage")
+    .threads(5, 20, "test")
+    .delay(5000)
+    .log(LoggingLevel.ERROR, "Message: ${body}")
+    .to("mock:test");
+```

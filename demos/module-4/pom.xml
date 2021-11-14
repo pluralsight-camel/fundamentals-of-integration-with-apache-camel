@@ -18,5 +18,6 @@
 
     <modules>
         <module>apache-camel-foundations</module>
+        <module>customer-integration-enhanced</module>
     </modules>
 </project>
