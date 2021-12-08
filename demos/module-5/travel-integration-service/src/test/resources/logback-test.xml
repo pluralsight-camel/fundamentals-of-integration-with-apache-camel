@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/base.xml" />
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+    <logger name="org.springframework.core " level="warn" />
+    <logger name="org.springframework.beans" level="warn" />
+    <logger name="org.springframework.context" level="warn" />
+    <logger name="org.springframework.transaction" level="warn" />
+    <logger name="org.springframework.web" level="warn" />
+    <logger name="org.springframework.test" level="warn" />
+    <logger name="com.pluralsight.michaelhoffman.camel" level="debug" />
+</configuration>

@@ -8,18 +8,15 @@
 
 	<parent>
 		<groupId>com.pluralsight.michaelhoffman.camel</groupId>
-		<artifactId>fundamentals-of-integration-with-apache-camel</artifactId>
+		<artifactId>demos</artifactId>
 		<version>1</version>
 	</parent>
 
-    <artifactId>demos</artifactId>
+    <artifactId>module-5</artifactId>
     <version>1</version>
     <packaging>pom</packaging>
 
     <modules>
-        <module>module-2</module>
-        <module>module-3</module>
-        <module>module-4</module>
-        <module>module-5</module>
+        <module>travel-integration-service</module>
     </modules>
 </project>

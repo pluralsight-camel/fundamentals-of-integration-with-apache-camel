@@ -37,6 +37,8 @@
 
         <spring.boot.version>2.5.2</spring.boot.version>
 
+        <lombok.version>1.18.22</lombok.version>
+
         <compiler.fork>false</compiler.fork>
         <skip.starting.camel.context>false</skip.starting.camel.context>
 

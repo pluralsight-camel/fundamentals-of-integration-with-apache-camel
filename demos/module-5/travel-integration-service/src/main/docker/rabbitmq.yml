@@ -1,0 +1,12 @@
+# Configuration for running the travel integration service
+version: '3.8'
+services:
+  travelintegrationservice-rabbitmq:
+    image: rabbitmq:3.9.10-management-alpine
+    container_name: 'rabbitmq'
+    volumes:
+      - ./config/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      - ./config/definitions.json:/etc/rabbitmq/definitions.json
+    ports:
+      - '5672:5672'
+      - '15672:15672'
