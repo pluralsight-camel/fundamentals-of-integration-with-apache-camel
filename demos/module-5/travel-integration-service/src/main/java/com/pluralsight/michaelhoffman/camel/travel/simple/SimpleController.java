@@ -1,4 +1,4 @@
-package com.pluralsight.michaelhoffman.camel.travel.integration;
+package com.pluralsight.michaelhoffman.camel.travel.simple;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

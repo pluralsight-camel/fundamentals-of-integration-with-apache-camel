@@ -39,7 +39,43 @@
   "policies": [],
   "queues": [
     {
-      "name": "simple",
+      "name": "simple_a",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
+    },
+    {
+      "name": "sales_customer",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
+    },
+    {
+      "name": "simple_nomatch",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
+    },
+    {
+      "name": "itinerary_customer",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
+    },
+    {
+      "name": "simple_b",
       "vhost": "/",
       "durable": true,
       "auto_delete": false,
@@ -50,9 +86,29 @@
   ],
   "exchanges": [
     {
-      "name": "travel.simple",
+      "name": "customer",
       "vhost": "/",
       "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "simple",
+      "vhost": "/",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {
+        "alternate-exchange": "simple_nomatch"
+      }
+    },
+    {
+      "name": "simple_nomatch",
+      "vhost": "/",
+      "type": "fanout",
       "durable": true,
       "auto_delete": false,
       "internal": false,
@@ -61,9 +117,41 @@
   ],
   "bindings": [
     {
-      "source": "travel.simple",
+      "source": "customer",
       "vhost": "/",
-      "destination": "simple",
+      "destination": "sales_customer",
+      "destination_type": "queue",
+      "routing_key": "customer.*",
+      "arguments": {}
+    },
+    {
+      "source": "customer",
+      "vhost": "/",
+      "destination": "itinerary_customer",
+      "destination_type": "queue",
+      "routing_key": "customer.delete",
+      "arguments": {}
+    },
+    {
+      "source": "simple",
+      "vhost": "/",
+      "destination": "simple_a",
+      "destination_type": "queue",
+      "routing_key": "simple.a",
+      "arguments": {}
+    },
+    {
+      "source": "simple",
+      "vhost": "/",
+      "destination": "simple_b",
+      "destination_type": "queue",
+      "routing_key": "simple.b",
+      "arguments": {}
+    },
+    {
+      "source": "simple_nomatch",
+      "vhost": "/",
+      "destination": "simple_nomatch",
       "destination_type": "queue",
       "routing_key": "",
       "arguments": {}

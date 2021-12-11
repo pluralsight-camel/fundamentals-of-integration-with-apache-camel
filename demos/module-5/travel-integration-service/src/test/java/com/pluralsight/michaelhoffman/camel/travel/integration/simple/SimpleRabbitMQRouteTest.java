@@ -1,8 +1,10 @@
-package com.pluralsight.michaelhoffman.camel.travel.integration;
+package com.pluralsight.michaelhoffman.camel.travel.integration.simple;
 
+import com.pluralsight.michaelhoffman.camel.travel.integration.IntegrationConfig;
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.component.mock.MockEndpoint;
+import org.apache.camel.component.rabbitmq.RabbitMQConstants;
 import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
 import org.apache.camel.test.spring.junit5.MockEndpointsAndSkip;
 import org.apache.camel.test.spring.junit5.UseAdviceWith;
@@ -36,8 +38,10 @@ public class SimpleRabbitMQRouteTest {
 
         camelContext.start();
 
-        restEndpoint.expectedMessageCount(1);
-        template.sendBody("direct:simpleStart", "TEST");
+        restEndpoint.expectedMessageCount(3);
+        template.sendBodyAndHeader("direct:simpleStart", "A", RabbitMQConstants.ROUTING_KEY, "simple.a");
+        template.sendBodyAndHeader("direct:simpleStart", "B", RabbitMQConstants.ROUTING_KEY, "simple.b");
+        template.sendBodyAndHeader("direct:simpleStart", "C", RabbitMQConstants.ROUTING_KEY, "simple.c");
         restEndpoint.assertIsSatisfied();
     }
 }
