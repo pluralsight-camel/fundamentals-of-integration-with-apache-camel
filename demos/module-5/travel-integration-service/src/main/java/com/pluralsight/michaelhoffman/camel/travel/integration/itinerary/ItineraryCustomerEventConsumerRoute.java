@@ -34,19 +34,15 @@ public class ItineraryCustomerEventConsumerRoute extends RouteBuilder {
         )
             .unmarshal()
                 .json(CustomerEvent.class)
-            .log(LoggingLevel.DEBUG, "Received customer event: ${body}")
             .choice()
                 .when(header(RabbitMQConstants.ROUTING_KEY).isEqualToIgnoreCase("customer.delete"))
-                    .log(LoggingLevel.DEBUG, "Processing customer deletion event")
                     .to("direct:postToItineraryEndpoint")
                 .otherwise()
-                    .log(LoggingLevel.DEBUG, "Received customer event type to ignore")
                     .stop();
 
         from("direct:postToItineraryEndpoint")
             .marshal()
                 .json()
-            .log(LoggingLevel.DEBUG, "Sending event to itinerary endpoint: ${body}")
             .to("rest:post:itinerary/customer?host={{app.itinerary-service.host}}");
     }
 }

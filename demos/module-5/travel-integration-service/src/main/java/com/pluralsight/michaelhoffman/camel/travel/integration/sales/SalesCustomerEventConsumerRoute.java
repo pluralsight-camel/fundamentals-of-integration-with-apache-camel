@@ -6,7 +6,6 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.rabbitmq.RabbitMQConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
@@ -35,22 +34,20 @@ public class SalesCustomerEventConsumerRoute extends RouteBuilder {
         )
             .unmarshal()
                 .json(CustomerEvent.class)
-            .log(LoggingLevel.DEBUG, "Received customer event: ${body}")
             .choice()
                 .when(header(RabbitMQConstants.ROUTING_KEY).isEqualToIgnoreCase("customer.create"))
-                    .log(LoggingLevel.DEBUG, "Processing customer create event")
                     .to("direct:postToSalesEndpoint")
                 .when(header(RabbitMQConstants.ROUTING_KEY).isEqualToIgnoreCase("customer.delete"))
-                    .log(LoggingLevel.DEBUG, "Processing customer delete event")
                     .to("direct:postToSalesEndpoint")
                 .otherwise()
-                    .log(LoggingLevel.DEBUG, "Received customer event type to ignore")
                     .stop();
 
         from("direct:postToSalesEndpoint")
             .marshal()
                 .json()
-            .log(LoggingLevel.DEBUG, "Sending event to sales endpoint: ${body}")
-            .to("rest:post:sales/customer?host={{app.sales-service.host}}");
+            .doTry()
+                .to("rest:post:sales/customer?host={{app.sales-service.host}}")
+            .doCatch(Exception.class)
+                .log(LoggingLevel.ERROR, "Here's the exception: ${exception}, and the headers: ${headers}");
     }
 }
