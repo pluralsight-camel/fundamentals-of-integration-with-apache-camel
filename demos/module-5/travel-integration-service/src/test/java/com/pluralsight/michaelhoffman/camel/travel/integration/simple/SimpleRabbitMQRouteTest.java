@@ -1,6 +1,6 @@
 package com.pluralsight.michaelhoffman.camel.travel.integration.simple;
 
-import com.pluralsight.michaelhoffman.camel.travel.integration.IntegrationConfig;
+import com.pluralsight.michaelhoffman.camel.travel.config.IntegrationConfig;
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.component.mock.MockEndpoint;

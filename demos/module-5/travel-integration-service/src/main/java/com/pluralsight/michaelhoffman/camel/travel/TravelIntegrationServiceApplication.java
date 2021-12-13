@@ -1,4 +1,4 @@
-package com.pluralsight.michaelhoffman.camel.travel.integration;
+package com.pluralsight.michaelhoffman.camel.travel;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

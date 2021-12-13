@@ -1,9 +1,12 @@
-package com.pluralsight.michaelhoffman.camel.travel.integration;
+package com.pluralsight.michaelhoffman.camel.travel.config;
 
 import com.rabbitmq.client.ConnectionFactory;
+import org.apache.camel.spring.spi.BridgePropertyPlaceholderConfigurer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.web.client.RestTemplate;
 
 import java.net.URISyntaxException;
 import java.security.KeyManagementException;
@@ -37,6 +40,11 @@ public class IntegrationConfig {
         rabbitConnectionFactory.setPort(rabbitMqPort);
         rabbitConnectionFactory.setVirtualHost(rabbitMqVirtualHost);
         return rabbitConnectionFactory;
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 
 }

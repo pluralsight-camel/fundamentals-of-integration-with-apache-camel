@@ -1,14 +1,12 @@
 package com.pluralsight.michaelhoffman.camel.travel.common;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 /**
  * Represents a customer event for create, update and delete
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class CustomerEvent {
     private int customerId;
