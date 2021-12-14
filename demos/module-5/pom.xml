@@ -17,6 +17,13 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>travel-integration-service</module>
+        <module>customer-domain-service</module>
+        <module>customer-integration-service</module>
+        <module>itinerary-domain-service</module>
+        <module>itinerary-integration-service</module>
+        <module>simple-integration-service</module>
+        <module>sales-domain-service</module>
+        <module>sales-integration-service</module>
+        <module>rabbitmq-docker</module>
     </modules>
 </project>
