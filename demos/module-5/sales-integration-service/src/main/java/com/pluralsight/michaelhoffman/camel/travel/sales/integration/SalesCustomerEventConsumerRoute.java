@@ -31,22 +31,16 @@ public class SalesCustomerEventConsumerRoute extends RouteBuilder {
             "&passive=true" +
             "&queue=sales_customer"
         )
-            .unmarshal()
-                .json(CustomerEvent.class)
             .choice()
                 .when(header(RabbitMQConstants.ROUTING_KEY).isEqualToIgnoreCase("customer.create"))
                     .to("direct:postToSalesEndpoint")
                 .when(header(RabbitMQConstants.ROUTING_KEY).isEqualToIgnoreCase("customer.delete"))
                     .to("direct:postToSalesEndpoint")
                 .otherwise()
-                    .stop();
+                    .stop()
+            .endChoice();
 
         from("direct:postToSalesEndpoint")
-            .marshal()
-                .json()
-            .doTry()
-                .to("rest:post:sales/customer?host={{app.sales-service.host}}")
-            .doCatch(Exception.class)
-                .log(LoggingLevel.ERROR, "Here's the exception: ${exception}, and the headers: ${headers}");
+            .to("rest:post:sales/customer?host={{app.sales-service.host}}");
     }
 }

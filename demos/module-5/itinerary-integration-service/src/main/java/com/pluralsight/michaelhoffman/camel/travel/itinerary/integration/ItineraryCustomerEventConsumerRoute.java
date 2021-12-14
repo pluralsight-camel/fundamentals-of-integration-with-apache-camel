@@ -31,8 +31,6 @@ public class ItineraryCustomerEventConsumerRoute extends RouteBuilder {
             "&passive=true" +
             "&queue=itinerary_customer"
         )
-            .unmarshal()
-                .json(CustomerEvent.class)
             .choice()
                 .when(header(RabbitMQConstants.ROUTING_KEY).isEqualToIgnoreCase("customer.delete"))
                     .to("direct:postToItineraryEndpoint")
@@ -40,8 +38,6 @@ public class ItineraryCustomerEventConsumerRoute extends RouteBuilder {
                     .stop();
 
         from("direct:postToItineraryEndpoint")
-            .marshal()
-                .json()
             .to("rest:post:itinerary/customer?host={{app.itinerary-service.host}}");
     }
 }
