@@ -48,7 +48,57 @@
       }
     },
     {
+      "name": "simple.idempotent",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
+    },
+    {
+      "name": "simple.deadletter",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
+    },
+    {
       "name": "sales_customer",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
+    },
+    {
+      "name": "simple.direct",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
+    },
+    {
+      "name": "589931991",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": true,
+      "arguments": {}
+    },
+    {
+      "name": "-2109239005",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": true,
+      "arguments": {}
+    },
+    {
+      "name": "competing.consumer",
       "vhost": "/",
       "durable": true,
       "auto_delete": false,
@@ -67,6 +117,15 @@
     },
     {
       "name": "itinerary_customer",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {
+        "x-queue-type": "classic"
+      }
+    },
+    {
+      "name": "simple.dedupe",
       "vhost": "/",
       "durable": true,
       "auto_delete": false,
@@ -95,6 +154,15 @@
       "arguments": {}
     },
     {
+      "name": "simple.idempotent",
+      "vhost": "/",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
       "name": "simple",
       "vhost": "/",
       "type": "topic",
@@ -104,6 +172,51 @@
       "arguments": {
         "alternate-exchange": "simple_nomatch"
       }
+    },
+    {
+      "name": "dlq.direct",
+      "vhost": "/",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": true,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "simple.deadletter",
+      "vhost": "/",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "simple.direct",
+      "vhost": "/",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "competing.consumer",
+      "vhost": "/",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "simple.dedupe",
+      "vhost": "/",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
     },
     {
       "name": "simple_nomatch",
@@ -116,6 +229,14 @@
     }
   ],
   "bindings": [
+    {
+      "source": "competing.consumer",
+      "vhost": "/",
+      "destination": "competing.consumer",
+      "destination_type": "queue",
+      "routing_key": "",
+      "arguments": {}
+    },
     {
       "source": "customer",
       "vhost": "/",
@@ -133,6 +254,22 @@
       "arguments": {}
     },
     {
+      "source": "dlq.direct",
+      "vhost": "/",
+      "destination": "-2109239005",
+      "destination_type": "queue",
+      "routing_key": "",
+      "arguments": {}
+    },
+    {
+      "source": "dlq.direct",
+      "vhost": "/",
+      "destination": "589931991",
+      "destination_type": "queue",
+      "routing_key": "",
+      "arguments": {}
+    },
+    {
       "source": "simple",
       "vhost": "/",
       "destination": "simple_a",
@@ -146,6 +283,38 @@
       "destination": "simple_b",
       "destination_type": "queue",
       "routing_key": "simple.b",
+      "arguments": {}
+    },
+    {
+      "source": "simple.deadletter",
+      "vhost": "/",
+      "destination": "simple.deadletter",
+      "destination_type": "queue",
+      "routing_key": "",
+      "arguments": {}
+    },
+    {
+      "source": "simple.dedupe",
+      "vhost": "/",
+      "destination": "simple.dedupe",
+      "destination_type": "queue",
+      "routing_key": "",
+      "arguments": {}
+    },
+    {
+      "source": "simple.direct",
+      "vhost": "/",
+      "destination": "simple.direct",
+      "destination_type": "queue",
+      "routing_key": "",
+      "arguments": {}
+    },
+    {
+      "source": "simple.idempotent",
+      "vhost": "/",
+      "destination": "simple.idempotent",
+      "destination_type": "queue",
+      "routing_key": "",
       "arguments": {}
     },
     {

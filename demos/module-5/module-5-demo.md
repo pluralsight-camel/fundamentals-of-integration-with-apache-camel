@@ -2,6 +2,10 @@
 
 Module 5 focuses on event notification with Apache Camel.  
 
+## RabbitMQ Username and Password
+
+The username and password for the RabbitMQ configuration are both: travelintegrationservice
+
 ## Project Setup
 
 1. Java

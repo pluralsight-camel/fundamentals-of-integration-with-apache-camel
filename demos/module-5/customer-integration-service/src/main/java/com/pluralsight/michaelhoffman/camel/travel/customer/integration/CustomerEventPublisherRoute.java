@@ -79,7 +79,6 @@ public class CustomerEventPublisherRoute extends RouteBuilder {
 
         from("direct:sendEventToRabbitMQ")
             .setHeader(RabbitMQConstants.ROUTING_KEY, exchangeProperty("routingKey"))
-            .setHeader(RabbitMQConstants.IMMEDIATE, constant(0))
             .marshal()
                 .json()
             .to("rabbitmq:customer" +
