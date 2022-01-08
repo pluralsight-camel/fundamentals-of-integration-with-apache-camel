@@ -1,4 +1,4 @@
-package com.pluralsight.michaelhoffman.camel.orders.heldqueue.intgration;
+package com.pluralsight.michaelhoffman.camel.orders.heldqueue.integration;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

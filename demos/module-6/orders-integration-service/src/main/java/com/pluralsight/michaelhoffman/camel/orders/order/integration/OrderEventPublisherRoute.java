@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonParseException;
 import org.apache.camel.Exchange;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.component.rabbitmq.RabbitMQConstants;
 import org.apache.camel.model.rest.RestBindingMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +55,7 @@ public class OrderEventPublisherRoute extends RouteBuilder {
          */
         rest("/order-integration")
             .post("/event")
-                .type(CustomerEvent.class)
+                .type(OrderEvent.class)
                 .consumes("application/json")
             .route()
             .removeHeader(Exchange.HTTP_METHOD)
@@ -65,7 +64,7 @@ public class OrderEventPublisherRoute extends RouteBuilder {
             .removeHeader(Exchange.HTTP_URL)
             .removeHeader("CamelServletContextPath")
             .choice()
-                .when().simple("${body.eventType} =~ 'create'")
+                .when().simple("${body.eventType} =~ 'order.event'")
                     .to("direct:sendEventToKafka")
                 .otherwise()
                     .throwException(new InvalidEventTypeException("Event type is invalid"));
@@ -73,7 +72,7 @@ public class OrderEventPublisherRoute extends RouteBuilder {
         from("direct:sendEventToKafka")
             .marshal()
                 .json()
-            .to(""
-            );
+            .toD("kafka:{{app.kafka.topic}}?brokers={{app.kafka.brokers}}" +
+                "&clientId={{app.kafka.clientId}}");
     }
 }

@@ -1,8 +1,6 @@
 package com.pluralsight.michaelhoffman.camel.orders.heldqueue.integration;
 
-import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.component.rabbitmq.RabbitMQConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -22,7 +20,7 @@ public class OrdersHeldQueueOrderEventConsumerRoute extends RouteBuilder {
             deadLetterChannel(
                 "log:com.pluralsight.michaelhoffman.camel.orders.heldqueue.integration?level=ERROR"));
 
-        from("")
+        from("kafka:{{app.kafka.topic}}?brokers={{app.kafka.brokers}}")
             .to("rest:post:orders-held-queue/order?host={{app.orders-held-queue-service.host}}");
     }
 }
