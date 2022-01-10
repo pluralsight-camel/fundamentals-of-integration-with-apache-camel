@@ -36,13 +36,6 @@ public class OrderEventPublisherRoute extends RouteBuilder {
 
         errorHandler(defaultErrorHandler().log(log));
 
-        onException(InvalidEventTypeException.class)
-            .handled(true)
-            .log(LoggingLevel.ERROR, "An invalid event type was sent")
-            .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(400))
-            .setHeader(Exchange.CONTENT_TYPE, constant("text/plain"))
-            .setBody().constant("Invalid event type sent");
-
         onException(JsonParseException.class)
             .handled(true)
             .log(LoggingLevel.ERROR, "An exception occurred parsing the request body")
@@ -63,16 +56,8 @@ public class OrderEventPublisherRoute extends RouteBuilder {
             .removeHeader(Exchange.HTTP_URI)
             .removeHeader(Exchange.HTTP_URL)
             .removeHeader("CamelServletContextPath")
-            .choice()
-                .when().simple("${body.eventType} =~ 'order.event'")
-                    .to("direct:sendEventToKafka")
-                .otherwise()
-                    .throwException(new InvalidEventTypeException("Event type is invalid"));
-
-        from("direct:sendEventToKafka")
             .marshal()
                 .json()
-            .toD("kafka:{{app.kafka.topic}}?brokers={{app.kafka.brokers}}" +
-                "&clientId={{app.kafka.clientId}}");
+            .toD("kafka:{{app.kafka.topic}}?brokers={{app.kafka.brokers}}");
     }
 }

@@ -14,10 +14,5 @@ public class OrderEvent {
     private int orderNumber;
     private int itemNumber;
     private int customerNumber;
-    private String shippingAddressLine1;
-    private String shippingAddressLine2;
-    private String shippingCity;
-    private String shippingState;
-    private String shippingPostalCode;
     private String eventType;
 }
