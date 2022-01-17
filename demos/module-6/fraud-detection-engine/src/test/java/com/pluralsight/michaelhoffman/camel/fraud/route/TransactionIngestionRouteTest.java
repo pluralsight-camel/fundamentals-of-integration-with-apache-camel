@@ -36,7 +36,7 @@ public class TransactionIngestionRouteTest {
     @EndpointInject("mock:intercept")
     private MockEndpoint mockInterceptEndpoint;
 
-    @Value("classpath:data/customer-transaction-large-file.csv")
+    @Value("classpath:data/customer-transaction-small-file.csv")
     private Resource customerTransactionLargeFileResource;
 
     @Test

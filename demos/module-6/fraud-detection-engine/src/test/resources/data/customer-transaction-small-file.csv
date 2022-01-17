@@ -1,0 +1,2 @@
+﻿TransactionId,TransactionDateTime,OrderNumber,AccountName,ContactName,ContactMainPhone,ContactCellPhone,ContactEmailAddress,ShippingAddressLine1,ShippingAddressLine2,ShippingAddressCity,ShippingAddressState,ShippingAddressPostalCode,ShippingAddressCountry,PaymentType,PaymentAccountNumber
+1569f6bc-9c02-4f7a-b3b4-f0c8a5de8e94,2022-01-01 09:00:00,10001000,Globomantics,Alberto Hart,8154510123,8154510124,alberto.hart@globomantics.com,5715 Tanagerlake Rd,Suite 7732,Lithia,FL,33547,US,VISA,4012888888881880
