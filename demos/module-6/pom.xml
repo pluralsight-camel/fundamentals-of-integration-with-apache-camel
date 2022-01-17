@@ -17,6 +17,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>fraud-detection-engine</module>
         <module>orders-domain-service</module>
         <module>orders-integration-service</module>
         <module>orders-held-queue-service</module>

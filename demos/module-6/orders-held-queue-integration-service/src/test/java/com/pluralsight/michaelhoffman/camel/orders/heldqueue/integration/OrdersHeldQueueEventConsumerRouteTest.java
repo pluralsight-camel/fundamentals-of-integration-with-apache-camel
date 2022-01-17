@@ -4,7 +4,7 @@ import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
 import org.junit.jupiter.api.Test;
 
 @CamelSpringBootTest
-public class OrdersHeldQueueIntegrationServiceApplication {
+public class OrdersHeldQueueEventConsumerRouteTest {
 
     @Test
     void contextLoads() {

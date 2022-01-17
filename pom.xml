@@ -33,7 +33,7 @@
         <java.version>11</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <camel.version>3.11.0</camel.version>
+        <camel.version>3.11.4</camel.version>
 
         <spring.boot.version>2.5.2</spring.boot.version>
 
