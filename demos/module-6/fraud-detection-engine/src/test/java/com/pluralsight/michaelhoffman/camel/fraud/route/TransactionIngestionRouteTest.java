@@ -33,8 +33,8 @@ public class TransactionIngestionRouteTest {
     @Autowired
     private ProducerTemplate producerTemplate;
 
-    @EndpointInject("mock:result")
-    private MockEndpoint mockResultEndpoint;
+    @EndpointInject("mock:intercept")
+    private MockEndpoint mockInterceptEndpoint;
 
     @Value("classpath:data/customer-transaction-large-file.csv")
     private Resource customerTransactionLargeFileResource;
@@ -49,14 +49,13 @@ public class TransactionIngestionRouteTest {
             rb -> rb.replaceFromWith("direct:file:start"));
         // Once advice with is used, the camel context has to be started manually
         camelContext.start();
-        mockResultEndpoint.expectedMessageCount(200);
+        mockInterceptEndpoint.expectedMessageCount(200);
         long start = System.currentTimeMillis();
         producerTemplate.sendBody("direct:file:start", file);
         long end = System.currentTimeMillis();
         long total = end - start;
         System.err.println("Total time: " + total + "ms");
-        Thread.sleep(20000);
-        mockResultEndpoint.assertIsSatisfied();
+        mockInterceptEndpoint.assertIsSatisfied();
     }
 
 }
