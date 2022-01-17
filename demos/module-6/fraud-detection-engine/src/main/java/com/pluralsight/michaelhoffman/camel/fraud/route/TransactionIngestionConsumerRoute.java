@@ -15,16 +15,16 @@ import org.springframework.stereotype.Component;
  * Route that consumes order events for the held order queue
  */
 @Component
-public class TransactionIngestionRoute extends RouteBuilder {
+public class TransactionIngestionConsumerRoute extends RouteBuilder {
 
     private static final Logger log =
-        LoggerFactory.getLogger(TransactionIngestionRoute.class);
+        LoggerFactory.getLogger(TransactionIngestionConsumerRoute.class);
 
     private CsvDataFormat csvDataFormatTransaction;
     private JacksonDataFormat jsonFormatTransactionEvent;
     private FraudDetectionProcessor fraudDetectionProcessor;
 
-    public TransactionIngestionRoute(
+    public TransactionIngestionConsumerRoute(
         @Qualifier("csvDataFormatTransaction")
             CsvDataFormat csvDataFormatTransaction,
         @Qualifier("jsonFormatTransactionEvent")
@@ -39,29 +39,16 @@ public class TransactionIngestionRoute extends RouteBuilder {
     public void configure() throws Exception {
         errorHandler(defaultErrorHandler().log(log));
 
-        from("file:{{app.transactionProducerRoute.directory}}" +
-            "?include={{app.transactionProducerRoute.includeFile}}" +
-            "&move={{app.transactionProducerRoute.moveDirectory}}")
-            .routeId("transaction-file-upload-route")
-            .unmarshal(csvDataFormatTransaction)
-            .split(body())
-            .bean(TransactionLineToTransactionEventMapper.class, "process")
-            .setProperty("accountName", simple("${body.accountName}"))
-            .marshal().json()
-            .toD("kafka:{{app.kafka.topic}}" +
-                "?brokers={{app.kafka.brokers}}" +
-                "&clientId={{app.kafka.producer.clientId}}" +
-                "$key=${exchangeProperty.accountName}");
-
         from("kafka:{{app.kafka.topic}}" +
             "?brokers={{app.kafka.brokers}}" +
             "&bridgeErrorHandler=true" +
             "&clientId={{app.kafka.consumer.clientId}}" +
             "&consumersCount={{app.kafka.consumersCount}}" +
             "&groupId={{app.kafka.consumerGroupId}}")
+            .routeId("transaction-ingestion-consumer-route")
             .unmarshal(jsonFormatTransactionEvent)
-            .to("bean:fraudDetectionProcessor?method=process")
-            .to("mock:intercept");
+            .bean(FraudDetectionProcessor.class, "process")
+            .log(LoggingLevel.DEBUG, "Received: ${body}");
 
     }
 }

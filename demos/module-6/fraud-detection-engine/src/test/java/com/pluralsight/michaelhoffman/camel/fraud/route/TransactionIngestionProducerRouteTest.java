@@ -26,7 +26,7 @@ import org.springframework.test.context.TestPropertySource;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @MockEndpointsAndSkip("file:.*")
 @UseAdviceWith
-public class TransactionIngestionRouteTest {
+public class TransactionIngestionProducerRouteTest {
     @Autowired
     private CamelContext camelContext;
 
@@ -45,11 +45,12 @@ public class TransactionIngestionRouteTest {
         file.setFile(customerTransactionLargeFileResource.getFile());
 
         AdviceWith.adviceWith(camelContext,
-            "transaction-file-upload-route",
+            "transaction-ingestion-producer-route",
             rb -> rb.replaceFromWith("direct:file:start"));
         // Once advice with is used, the camel context has to be started manually
         camelContext.start();
-        mockInterceptEndpoint.expectedMessageCount(200);
+        mockInterceptEndpoint.expectedMessageCount(1);
+        mockInterceptEndpoint.setResultWaitTime(30000);
         long start = System.currentTimeMillis();
         producerTemplate.sendBody("direct:file:start", file);
         long end = System.currentTimeMillis();
