@@ -40,7 +40,8 @@ public class TransactionIngestionProducerRoute extends RouteBuilder {
             .marshal().json()
             .toD("kafka:{{app.kafka.topic}}" +
                 "?brokers={{app.kafka.brokers}}" +
-                "&clientId={{app.kafka.producer.clientId}}" +
-                "$key=${exchangeProperty.accountName}");
+                "&clientId=fraud-engine-transaction-ingestion-route-producer" +
+                "&key=${exchangeProperty.accountName}" +
+                "&partitioner=com.pluralsight.michaelhoffman.camel.fraud.partitioner.LargeCustomerPartitioner");
     }
 }

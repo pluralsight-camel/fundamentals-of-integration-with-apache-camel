@@ -1,7 +1,6 @@
 package com.pluralsight.michaelhoffman.camel.fraud.route;
 
 import com.pluralsight.michaelhoffman.camel.fraud.processor.FraudDetectionProcessor;
-import com.pluralsight.michaelhoffman.camel.fraud.processor.TransactionLineToTransactionEventMapper;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jackson.JacksonDataFormat;
@@ -22,17 +21,14 @@ public class TransactionIngestionConsumerRoute extends RouteBuilder {
 
     private CsvDataFormat csvDataFormatTransaction;
     private JacksonDataFormat jsonFormatTransactionEvent;
-    private FraudDetectionProcessor fraudDetectionProcessor;
 
     public TransactionIngestionConsumerRoute(
         @Qualifier("csvDataFormatTransaction")
             CsvDataFormat csvDataFormatTransaction,
         @Qualifier("jsonFormatTransactionEvent")
-            JacksonDataFormat jsonFormatTransactionEvent,
-        FraudDetectionProcessor fraudDetectionProcessor) {
+            JacksonDataFormat jsonFormatTransactionEvent) {
         this.csvDataFormatTransaction = csvDataFormatTransaction;
         this.jsonFormatTransactionEvent = jsonFormatTransactionEvent;
-        this.fraudDetectionProcessor = fraudDetectionProcessor;
     }
 
     @Override
@@ -42,9 +38,9 @@ public class TransactionIngestionConsumerRoute extends RouteBuilder {
         from("kafka:{{app.kafka.topic}}" +
             "?brokers={{app.kafka.brokers}}" +
             "&bridgeErrorHandler=true" +
-            "&clientId={{app.kafka.consumer.clientId}}" +
+            "&clientId=fraud-engine-transaction-ingestion-route-consumer" +
             "&consumersCount={{app.kafka.consumersCount}}" +
-            "&groupId={{app.kafka.consumerGroupId}}")
+            "&groupId=consumer-group-transactions")
             .routeId("transaction-ingestion-consumer-route")
             .unmarshal(jsonFormatTransactionEvent)
             .bean(FraudDetectionProcessor.class, "process")

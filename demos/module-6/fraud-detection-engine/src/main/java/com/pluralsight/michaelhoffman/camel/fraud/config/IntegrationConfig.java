@@ -1,7 +1,6 @@
 package com.pluralsight.michaelhoffman.camel.fraud.config;
 
 import com.pluralsight.michaelhoffman.camel.fraud.event.TransactionEvent;
-import com.pluralsight.michaelhoffman.camel.fraud.processor.FraudDetectionProcessor;
 import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.apache.camel.model.dataformat.CsvDataFormat;
 import org.springframework.context.annotation.Bean;
@@ -23,8 +22,4 @@ public class IntegrationConfig {
         return new JacksonDataFormat(TransactionEvent.class);
     }
 
-    @Bean("fraudDetectionProcessor")
-    public FraudDetectionProcessor fraudDetectionProcessor() {
-        return new FraudDetectionProcessor();
-    }
 }

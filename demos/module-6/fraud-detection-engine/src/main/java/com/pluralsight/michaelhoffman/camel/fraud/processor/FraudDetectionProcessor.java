@@ -4,7 +4,9 @@ import com.pluralsight.michaelhoffman.camel.fraud.domain.TransactionFraudResult;
 import com.pluralsight.michaelhoffman.camel.fraud.event.TransactionEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
+@Component
 public class FraudDetectionProcessor {
 
     private static final Logger log =

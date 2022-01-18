@@ -1,3 +1,3 @@
 #!/bin/bash
 
-/bin/kafka-topics --bootstrap-server broker:29092 --topic customer-transactions --partitions 2 --replication-factor 1 --create
+/bin/kafka-topics --bootstrap-server broker1:29092,broker2:29093,broker3:29094 --topic customer-transactions --partitions 3 --replication-factor 3 --create
