@@ -40,7 +40,9 @@ public class TransactionIngestionConsumerRoute extends RouteBuilder {
             "&bridgeErrorHandler=true" +
             "&clientId=fraud-engine-transaction-ingestion-route-consumer" +
             "&consumersCount={{app.kafka.consumersCount}}" +
-            "&groupId=consumer-group-transactions")
+            "&groupId=consumer-group-transactions" +
+            "&autoCommitEnable=true" +
+            "&autoCommitIntervalMs=5000")
             .routeId("transaction-ingestion-consumer-route")
             .unmarshal(jsonFormatTransactionEvent)
             .bean(FraudDetectionProcessor.class, "process")
