@@ -1,4 +1,4 @@
-# Configuration for running kakfa
+# Configuration for running kakfa with multiple brokers
 version: '3.8'
 services:
   zookeeper:

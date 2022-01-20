@@ -1,0 +1,14 @@
+{
+  "name": "FraudFileSinkConnector",
+  "config": {
+    "topics": "customer-transactions",
+    "connector.class": "org.apache.camel.kafkaconnector.file.CamelFileSinkConnector",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "tasks.max": "1",
+
+    "camel.sink.path.directoryName": "/tmp/camel/out",
+    "camel.sink.endpoint.fileName": "fraud-transactions-sink.csv",
+    "camel.sink.endpoint.fileExist": "Append"
+  }
+}

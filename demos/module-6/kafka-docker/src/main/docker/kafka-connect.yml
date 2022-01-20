@@ -1,0 +1,60 @@
+# Configuration for running kakfa connect
+version: "3.8"
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    hostname: zookeeper
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_LOG_LEVEL: ERROR
+    ports:
+      - "2181:2181"
+
+  broker:
+    image: confluentinc/cp-kafka:latest
+    hostname: broker
+    container_name: broker
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  topics:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: topics
+    depends_on:
+      - broker
+    volumes:
+      - ./kafka:/kafka
+    entrypoint:
+      - /kafka/create-topics-fraud-connect.sh
+
+  kafka-connect:
+    build: "."
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: "broker:29092"
+      CONNECT_GROUP_ID: "connect-group"
+      CONNECT_CONFIG_STORAGE_TOPIC: "__connect-configs"
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: -1
+      CONNECT_OFFSET_STORAGE_PARTITIONS: -1
+      CONNECT_OFFSET_STORAGE_TOPIC: "__connect-offsets"
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: -1
+      CONNECT_STATUS_STORAGE_TOPIC: "__connect-statuses"
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: -1
+      CONNECT_STATUS_STORAGE_PARTITIONS: -1
+      CONNECT_KEY_CONVERTER: "org.apache.kafka.connect.storage.StringConverter"
+      CONNECT_VALUE_CONVERTER: "org.apache.kafka.connect.storage.StringConverter"
+      CONNECT_REST_ADVERTISED_HOST_NAME: 'localhost'
+      CONNECT_REST_PORT: 8083
+    ports:
+      - "8083:8083"
+    volumes:
+      - ./kafka-connect:/kafka-connect
