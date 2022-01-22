@@ -1,0 +1,13 @@
+{
+    "name": "OrdersHttpSinkConnector",
+    "config": {
+        "topics": "orders",
+        "connector.class": "org.apache.camel.kafkaconnector.httpsink.CamelHttpsinkSinkConnector",
+        "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+        "value.converter": "org.apache.kafka.connect.storage.StringConverter",
+        "tasks.max": "1",
+
+        "camel.kamelet.http-sink.url": "http://mockserver:1080/orders-held-queue/order",
+        "camel.kamelet.http-sink.method": "POST"
+    }
+}

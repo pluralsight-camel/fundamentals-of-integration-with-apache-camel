@@ -1,0 +1,12 @@
+[
+  {
+    "httpRequest" : {
+      "method" : "POST",
+      "path" : "/orders-held-queue/order"
+    },
+    "httpResponse" : {
+      "body" : "Order received!",
+      "statusCode": 200
+    }
+  }
+]
