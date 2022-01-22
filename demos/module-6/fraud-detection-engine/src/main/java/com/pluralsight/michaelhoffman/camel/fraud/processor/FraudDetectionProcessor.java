@@ -6,6 +6,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+/**
+ * A simplified transaction fraud processor. In a real world example, there would be
+ * many of these processors, looking at multiple fraud indicators to arrive a score.
+ */
 @Component
 public class FraudDetectionProcessor {
 

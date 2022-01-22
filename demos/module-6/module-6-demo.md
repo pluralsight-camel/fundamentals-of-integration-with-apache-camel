@@ -133,3 +133,11 @@ To run the demonstration, follow these steps:
    -d '{"orderNumber":3, "itemNumber":10, "customerNumber":1000, "eventType":"order.event"}'
     ```
 5. The mock server running on port 8084 should receive the message and return a successful response. 
+
+## Opportunity for Learning
+
+The fraud detection engine is an interesting use case for Camel and Kafka. I highly recommend extending it as a learning experience. Here's some ideas for enhancement:
+
+1. Add a Kafka Connect source connectors to consume transactions from other sources, such as a database of customer transactions. 
+2. Add a stream for producing attributes of a fraudulent transaction so that they can be captured as "negatives". Negatives are known fraud, like a customer name or a payment card. 
+3. Consume from the stream of negatives to spider through all transactions to find fraudulent historical transactions that may have been missed during initial processing. 

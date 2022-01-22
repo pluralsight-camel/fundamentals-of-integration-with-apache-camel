@@ -7,6 +7,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+/**
+ * Mapper for a transaction row in the file to a transaction event.
+ */
 @Component
 public class TransactionLineToTransactionEventMapper {
 

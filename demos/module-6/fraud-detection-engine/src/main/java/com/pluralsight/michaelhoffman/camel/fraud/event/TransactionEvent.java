@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
- * Represents an order event for create
+ * Represents a customer transaction
  */
 @Data
 @NoArgsConstructor

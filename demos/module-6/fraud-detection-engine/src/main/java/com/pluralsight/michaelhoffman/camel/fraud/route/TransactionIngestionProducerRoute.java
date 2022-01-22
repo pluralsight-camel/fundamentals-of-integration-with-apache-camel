@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 /**
- * Route that consumes order events for the held order queue
+ * Route that produces customer transaction events to the fraud topic. The
+ * producer uses a custom partitioner for a large customer account. The account name is
+ * used as the key for records.
  */
 @Component
 public class TransactionIngestionProducerRoute extends RouteBuilder {

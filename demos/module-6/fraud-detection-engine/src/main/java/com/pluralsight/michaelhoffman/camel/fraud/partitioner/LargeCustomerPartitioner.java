@@ -9,6 +9,12 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This is a custom partitioner that is used for edge cases where
+ * a single key may have a high percentage of records created. In this example,
+ * the customer account "Carved Rock" does the majority of business and will be
+ * segregated to the last partition.
+ */
 @Component
 public class LargeCustomerPartitioner implements Partitioner {
 

@@ -11,7 +11,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 /**
- * Route that consumes order events for the held order queue
+ * Route that consumes customer transactions as part of a consumer group, then
+ * processes them through fraud detection rules.
  */
 @Component
 public class TransactionIngestionConsumerRoute extends RouteBuilder {

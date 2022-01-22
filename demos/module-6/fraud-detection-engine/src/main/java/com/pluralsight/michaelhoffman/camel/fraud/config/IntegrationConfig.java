@@ -6,6 +6,9 @@ import org.apache.camel.model.dataformat.CsvDataFormat;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Integration configurations for CSV and JSON data formats
+ */
 @Configuration
 public class IntegrationConfig {
 

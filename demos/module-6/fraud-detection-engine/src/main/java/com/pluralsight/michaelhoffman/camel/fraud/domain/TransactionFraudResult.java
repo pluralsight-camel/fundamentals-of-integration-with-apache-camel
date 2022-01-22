@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Represents an order event for create
+ * Represents a customer transaction fraud detection result, specifically a fraud score added to the transaction
  */
 
 @Data
