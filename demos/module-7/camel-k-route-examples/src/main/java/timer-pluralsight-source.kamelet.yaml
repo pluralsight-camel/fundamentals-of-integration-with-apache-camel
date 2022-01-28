@@ -1,0 +1,37 @@
+apiVersion: camel.apache.org/v1alpha1
+kind: Kamelet
+metadata:
+  name: timer-pluralsight-source
+  labels:
+    camel.apache.org/kamelet.type: "source"
+spec:
+  definition:
+    title: "Timer Pluralsight Example"
+    description: "Produces periodic events with a custom payload"
+    required:
+      - message
+    properties:
+      frequency:
+        title: Frequency
+        description: The time interval between two events
+        type: integer
+        default: 2000
+      message:
+        title: Message
+        description: The message to generate
+        type: string
+  types:
+    out:
+      mediaType: text/plain
+  flow:
+    from:
+      uri: timer:tick
+      parameters:
+        period: "{{frequency}}"
+      steps:
+        - set-body:
+            constant: "{{message}}"
+        - set-header:
+            name: "Content-Type"
+            constant: "text/plain"
+        - to: "kamelet:sink"

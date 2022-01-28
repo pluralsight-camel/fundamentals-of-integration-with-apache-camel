@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.pluralsight.michaelhoffman.camel</groupId>
+        <artifactId>module-7</artifactId>
+        <version>1</version>
+    </parent>
+
+    <artifactId>camel-k-route-examples</artifactId>
+    <version>1</version>
+    <packaging>jar</packaging>
+    <name>CamelKRouteExamples</name>
+    <description>Pluralsight course on Fundamentals of Integration with Apache Camel - Module 7 project for Camel K examples</description>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-bom</artifactId>
+                <version>${camel.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-core</artifactId>
+            <version>${camel.version}</version>
+        </dependency>
+
+    </dependencies>
+</project>
